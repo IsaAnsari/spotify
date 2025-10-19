@@ -1,3 +1,6 @@
+// --- BASE PATH FIX for hosting ---
+const basePath = window.location.origin.includes("github.io") ? "." : "";
+
 console.log('Lets Write JavaScript');
 
 let currentSong = new Audio();
@@ -566,3 +569,4 @@ async function main() {
 }
 
 main()
+
