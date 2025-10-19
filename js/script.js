@@ -1,6 +1,7 @@
 // --- BASE PATH FIX for hosting ---
 const basePath = window.location.origin.includes("github.io") ? "." : "";
 
+
 console.log('Lets Write JavaScript');
 
 let currentSong = new Audio();
@@ -20,7 +21,7 @@ let currentPlaylist = [];
 
 async function preloadAllSongs() {
     // let a = await fetch(`/songs/`);
-    let a = await fetch(`songs/`);
+    let a = await fetch(`${basePath}/songs/`);
     let response = await a.text();
     let div = document.createElement("div");
     div.innerHTML = response;
@@ -34,7 +35,7 @@ async function preloadAllSongs() {
 
             // Folder ke andar gaane lao
             // let folderReq = await fetch(`/songs/${folder}/`);
-            let folderReq = await fetch(`songs/${folder}/`);
+            let folderReq = await fetch(`${basePath}/${folder}/list.json`);
             let folderRes = await folderReq.text();
             let folderDiv = document.createElement("div");
             folderDiv.innerHTML = folderRes;
@@ -569,4 +570,3 @@ async function main() {
 }
 
 main()
-
