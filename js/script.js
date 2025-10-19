@@ -35,7 +35,8 @@ async function preloadAllSongs() {
 
             // Folder ke andar gaane lao
             // let folderReq = await fetch(`/songs/${folder}/`);
-            let folderReq = await fetch(`${basePath}/${folder}/list.json`);
+            let folderReq = await fetch(`${basePath}/songs/${folder}/list.json`);
+
             let folderRes = await folderReq.text();
             let folderDiv = document.createElement("div");
             folderDiv.innerHTML = folderRes;
@@ -148,7 +149,8 @@ function secondsToMinutesSeconds(seconds) {
 
 async function getSongs(folder) {
     currFolder = folder;
-    const res = await fetch(`/${folder}/list.json`);
+    const res = await fetch(`${basePath}/${folder}/list.json`);
+
     const data = await res.json();
     songs = data.songs;
 
@@ -290,12 +292,12 @@ async function displayAlbums() {
     const cardContainer = document.querySelector(".cardContainer");
 
     try {
-        const res = await fetch("songs.json");
+        const res = await fetch(`${basePath}/songs.json`);
         const data = await res.json();
 
         for (const folder of data.artists) {
             try {
-                const infoRes = await fetch(`songs/${folder}/info.json`);
+                const infoRes = await fetch(`${basePath}/songs/${folder}/info.json`);
                 const info = await infoRes.json();
 
                 cardContainer.innerHTML += `
