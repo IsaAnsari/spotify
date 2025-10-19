@@ -20,7 +20,6 @@ let currentPlaylist = [];
 
 
 async function preloadAllSongs() {
-    // let a = await fetch(`/songs/`);
     let a = await fetch(`${basePath}/songs/`);
     let response = await a.text();
     let div = document.createElement("div");
@@ -33,28 +32,18 @@ async function preloadAllSongs() {
         if (e.href.includes("/songs/")) {
             let folder = e.href.split("/").slice(-1)[0].replaceAll("%2C", ",");
 
-            // Folder ke andar gaane lao
-            // let folderReq = await fetch(`/songs/${folder}/`);
             let folderReq = await fetch(`${basePath}/songs/${folder}/list.json`);
+            let folderRes = await folderReq.json();
 
-            let folderRes = await folderReq.text();
-            let folderDiv = document.createElement("div");
-            folderDiv.innerHTML = folderRes;
-            let as = folderDiv.getElementsByTagName("a");
-
-            for (let i = 0; i < as.length; i++) {
-                const songEl = as[i];
-                if (songEl.href.endsWith(".mp3")) {
-                    let songName = songEl.href.split(`/${folder}/`)[1];
-                    allSongs.push({
-                        name: decodeURIComponent(songName),
-                        folder: folder
-                    });
-                }
+            if (folderRes.songs) {
+                folderRes.songs.forEach(songName => {
+                    allSongs.push({ name: decodeURIComponent(songName), folder });
+                });
             }
         }
     }
 }
+
 
 
 
@@ -149,7 +138,8 @@ function secondsToMinutesSeconds(seconds) {
 
 async function getSongs(folder) {
     currFolder = folder;
-    const res = await fetch(`${basePath}/${folder}/list.json`);
+    const res = await fetch(`${basePath}/${folder.startsWith("songs/") ? folder : "songs/" + folder}/list.json`);
+
 
     const data = await res.json();
     songs = data.songs;
