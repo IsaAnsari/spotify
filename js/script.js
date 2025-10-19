@@ -283,55 +283,48 @@ const playMusic = (track, pause = false) => {
 
 async function displayAlbums() {
     console.log("Displaying albums");
-
-    const res = await fetch(`/songs/`);
-    const div = document.createElement("div");
-    div.innerHTML = await res.text();
-
-    const anchors = div.getElementsByTagName("a");
     const cardContainer = document.querySelector(".cardContainer");
 
-    const folders = Array.from(anchors)
-        .map(a => a.href.split("/").slice(-1)[0])
-        .filter(name => name && !name.includes(".htaccess"));
+    try {
+        const res = await fetch("songs.json");
+        const data = await res.json();
 
-    for (const folder of folders) {
-        try {
-            const res = await fetch(`/songs/${folder}/list.json`);
-            const info = await res.json();
+        for (const folder of data.artists) {
+            try {
+                const infoRes = await fetch(`songs/${folder}/info.json`);
+                const info = await infoRes.json();
 
-            cardContainer.innerHTML += `
-                <div data-folder="songs/${folder}" class="card">
-                    <div class="play">
-                        <svg viewBox="0 0 24 24"><path d="m7.05 3.606 13.49 7.788a.7.7 0 0 1 0 1.212L7.05 20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 0 0 1 1.05-.606"></path></svg>
-                    </div>
-                    <img src="/songs/${folder}/${info.cover}" alt="cover">
-                    <h2>${info.title}</h2>
-                    <p>${info.description}</p>
-                </div>`;
-        } catch (err) {
-            console.warn(`⚠️ Could not load album: ${folder}`);
-        }
-    }
-
-    // Load playlist on card click
-    Array.from(document.getElementsByClassName("card")).forEach((card) => {
-        card.addEventListener("click", async (e) => {
-            const folder = e.currentTarget.dataset.folder;
-            songs = await getSongs(folder);
-            playMusic(songs[0]);
-
-            // Highlight first song icon
-            const firstLi = document.querySelector(".song-list li");
-            if (firstLi) firstLi.querySelector(".playnow img").src = "img/pause.svg";
-
-            // Auto open sidebar on mobile
-            if (window.innerWidth <= 1400) {
-                document.querySelector(".left").style.left = "0";
+                cardContainer.innerHTML += `
+                    <div data-folder="songs/${folder}" class="card">
+                        <div class="play">
+                            <svg viewBox="0 0 24 24"><path d="m7.05 3.606 
+                            13.49 7.788a.7.7 0 0 1 0 1.212L7.05 
+                            20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 
+                            0 0 1 1.05-.606"></path></svg>
+                        </div>
+                        <img src="songs/${folder}/cover.jpg" alt="cover">
+                        <h2>${info.title}</h2>
+                        <p>${info.description}</p>
+                    </div>`;
+            } catch (err) {
+                console.warn(`⚠️ Error loading ${folder}`, err);
             }
+        }
+
+        // Add click listeners
+        Array.from(document.getElementsByClassName("card")).forEach((card) => {
+            card.addEventListener("click", async (e) => {
+                const folder = e.currentTarget.dataset.folder;
+                songs = await getSongs(folder);
+                playMusic(songs[0]);
+            });
         });
-    });
+
+    } catch (err) {
+        console.error("❌ Could not load songs.json", err);
+    }
 }
+
 
 
 async function main() {
