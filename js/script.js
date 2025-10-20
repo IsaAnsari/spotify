@@ -327,7 +327,8 @@ async function displayAlbums() {
 async function main() {
     // Get the list of all the songs
     // await getSongs("songs/ncs");
-    await getSongs();
+    // await getSongs();
+    await getSongs("songs/A. R. Rahman");
     playMusic(songs[0], true);
 
     // Display all the albums on the page
@@ -563,4 +564,5 @@ async function main() {
 }
 
 main()
+
 
