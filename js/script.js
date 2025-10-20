@@ -236,7 +236,8 @@ async function getSongs(folder = "songs/A. R. Rahman") {
 
 const playMusic = (track, pause = false) => {
     // currentSong.src = `/${currFolder}/` + track;
-    currentSong.src = currFolder + '/' + track
+    // currentSong.src = currFolder + '/' + track
+    currentSong.src = `${basePath}/${currFolder}/${track}`;
 
     // ✅ Update index properly every time
     currentSongIndex = currentPlaylist.indexOf(track);
@@ -622,6 +623,7 @@ async function main() {
 }
 
 main()
+
 
 
 
