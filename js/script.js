@@ -1,5 +1,6 @@
 // --- BASE PATH FIX for hosting ---
-const basePath = window.location.origin.includes("github.io") ? "." : "";
+// const basePath = window.location.origin.includes("github.io") ? "." : "";
+const basePath = "";
 
 
 console.log('Lets Write JavaScript');
@@ -562,3 +563,4 @@ async function main() {
 }
 
 main()
+
