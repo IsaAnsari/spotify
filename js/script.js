@@ -137,13 +137,67 @@ function secondsToMinutesSeconds(seconds) {
 
 // }
 
-async function getSongs(folder) {
-    currFolder = folder;
-    const res = await fetch(`${basePath}/${folder.startsWith("songs/") ? folder : "songs/" + folder}/list.json`);
+// async function getSongs(folder) {
+//     currFolder = folder;
+//     const res = await fetch(`${basePath}/${folder.startsWith("songs/") ? folder : "songs/" + folder}/list.json`);
 
+
+//     const data = await res.json();
+//     songs = data.songs;
+
+//     // Show all songs in sidebar
+//     const songUL = document.querySelector(".song-list ul");
+//     songUL.innerHTML = "";
+
+//     songs.forEach((song, index) => {
+//         songUL.innerHTML += `
+//             <li>
+//                 <img class="invert" src="img/music.svg" alt="">
+//                 <div class="info">
+//                     <div>${song.replaceAll("%20", " ").replaceAll("%26", " ")}</div>
+//                     <div class="artistName">${data.title}</div>
+//                 </div>
+//                 <div class="playnow">
+//                     <img class="invert" src="img/play.svg" alt="">
+//                 </div>
+//             </li>`;
+//     });
+
+//     // Add click events
+//     Array.from(document.querySelectorAll(".song-list li")).forEach((li, index) => {
+//         li.addEventListener("click", () => {
+//             document.querySelectorAll(".song-list li .playnow img").forEach(img => img.src = "img/play.svg");
+//             li.querySelector(".playnow img").src = "img/pause.svg";
+//             currentPlaylist = songs;
+//             currentSongIndex = index;
+//             playMusic(songs[index]);
+//         });
+//     });
+
+//     currentPlaylist = songs;
+//     return songs;
+// }
+
+async function getSongs(folder = "songs/A. R. Rahman") {
+    currFolder = folder;
+
+    // ✅ Safe check to prevent undefined errors
+    if (!folder) {
+        console.error("❌ getSongs() called without a folder path!");
+        return;
+    }
+
+    // ✅ Normalize the path properly
+    const folderPath = folder.startsWith("songs/") ? folder : `songs/${folder}`;
+    const res = await fetch(`${basePath}/${folderPath}/list.json`);
+
+    if (!res.ok) {
+        console.error(`❌ Could not load list.json for ${folderPath}`);
+        return;
+    }
 
     const data = await res.json();
-    songs = data.songs;
+    songs = data.songs || [];
 
     // Show all songs in sidebar
     const songUL = document.querySelector(".song-list ul");
@@ -154,7 +208,7 @@ async function getSongs(folder) {
             <li>
                 <img class="invert" src="img/music.svg" alt="">
                 <div class="info">
-                    <div>${song.replaceAll("%20", " ").replaceAll("%26", " ")}</div>
+                    <div>${decodeURIComponent(song)}</div>
                     <div class="artistName">${data.title}</div>
                 </div>
                 <div class="playnow">
@@ -163,7 +217,7 @@ async function getSongs(folder) {
             </li>`;
     });
 
-    // Add click events
+    // Add click listeners
     Array.from(document.querySelectorAll(".song-list li")).forEach((li, index) => {
         li.addEventListener("click", () => {
             document.querySelectorAll(".song-list li .playnow img").forEach(img => img.src = "img/play.svg");
@@ -177,6 +231,7 @@ async function getSongs(folder) {
     currentPlaylist = songs;
     return songs;
 }
+
 
 
 const playMusic = (track, pause = false) => {
@@ -564,5 +619,6 @@ async function main() {
 }
 
 main()
+
 
 
