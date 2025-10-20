@@ -371,6 +371,7 @@ async function displayAlbums() {
             card.addEventListener("click", async (e) => {
                 const folder = decodeURIComponent(e.currentTarget.dataset.folder);
                 songs = await getSongs(folder);
+                document.querySelector(".song-list ul").scrollTop = 0;
                 playMusic(songs[0]);
             });
         });
@@ -623,6 +624,7 @@ async function main() {
 }
 
 main()
+
 
 
 
