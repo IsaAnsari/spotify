@@ -343,18 +343,20 @@ async function displayAlbums() {
 
         for (const folder of data.artists) {
             try {
-                const infoRes = await fetch(`${basePath}/songs/${folder}/info.json`);
+                // ✅ Encode folder name for URL
+                const encodedFolder = encodeURIComponent(folder);
+                const infoRes = await fetch(`${basePath}/songs/${encodedFolder}/info.json`);
                 const info = await infoRes.json();
 
                 cardContainer.innerHTML += `
-                    <div data-folder="songs/${folder}" class="card">
+                    <div data-folder="songs/${encodedFolder}" class="card">
                         <div class="play">
                             <svg viewBox="0 0 24 24"><path d="m7.05 3.606 
                             13.49 7.788a.7.7 0 0 1 0 1.212L7.05 
                             20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 
                             0 0 1 1.05-.606"></path></svg>
                         </div>
-                        <img src="songs/${folder}/cover.jpg" alt="cover">
+                        <img src="songs/${encodedFolder}/cover.jpg" alt="cover">
                         <h2>${info.title}</h2>
                         <p>${info.description}</p>
                     </div>`;
@@ -366,7 +368,7 @@ async function displayAlbums() {
         // Add click listeners
         Array.from(document.getElementsByClassName("card")).forEach((card) => {
             card.addEventListener("click", async (e) => {
-                const folder = e.currentTarget.dataset.folder;
+                const folder = decodeURIComponent(e.currentTarget.dataset.folder);
                 songs = await getSongs(folder);
                 playMusic(songs[0]);
             });
@@ -376,6 +378,7 @@ async function displayAlbums() {
         console.error("❌ Could not load songs.json", err);
     }
 }
+
 
 
 
@@ -619,6 +622,7 @@ async function main() {
 }
 
 main()
+
 
 
 
